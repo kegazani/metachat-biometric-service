@@ -1,0 +1,18 @@
+service:
+  name: "biometric-service"
+  log_level: "INFO"
+
+server:
+  http_port: 8003
+  http_host: "0.0.0.0"
+
+database:
+  url: "postgresql+asyncpg://postgres:postgres@127.0.0.1:5432/metachat_biometric"
+  pool_size: 10
+  max_overflow: 20
+
+kafka:
+  brokers: ["127.0.0.1:9092"]
+  topics:
+    biometric_data_received: "metachat.biometric.data.received"
+

@@ -1,6 +1,6 @@
 import structlog
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from src.api.app import app
 import uvicorn
 
 load_dotenv()
@@ -17,20 +17,22 @@ structlog.configure(
     cache_logger_on_first_use=False,
 )
 
-app = FastAPI(title="Biometric Service", version="1.0.0")
+logger = structlog.get_logger()
 
-@app.get("/health")
-async def health():
-    return {"status": "healthy"}
-
-@app.post("/biometric/sync")
-async def sync_biometric():
-    return {"message": "Not implemented yet"}
 
 def main():
     from src.config import Config
     config = Config()
-    uvicorn.run(app, host=config.http_host, port=config.http_port)
+    
+    logger.info("Starting Biometric Service", service_name=config.service_name)
+    
+    uvicorn.run(
+        "src.api.app:app",
+        host=config.http_host,
+        port=config.http_port,
+        log_level=config.log_level.lower()
+    )
+
 
 if __name__ == "__main__":
     main()
